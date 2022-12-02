@@ -1,6 +1,6 @@
 use anyhow::{bail, Context, Result};
-use aoc_2022::days::one::DayOne;
-use aoc_2022::days::Day;
+use aoc_2022::days::one::DAY_ONE;
+
 use clap::Parser;
 
 /// A CLI tool that solves Advent of Code 2022 puzzles
@@ -31,7 +31,7 @@ pub fn load_example_input(day: u8, part: u8) -> Result<String> {
 }
 
 fn main() -> Result<()> {
-    let days = [DayOne];
+    let days = [DAY_ONE];
     let args = Args::parse();
 
     if args.part > 2 {

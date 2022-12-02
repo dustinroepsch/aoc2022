@@ -1,6 +1,6 @@
 use super::Day;
 
-pub const DayOne: Day = Day { part_one, part_two };
+pub const DAY_ONE: Day = Day { part_one, part_two };
 
 fn part_one(input: &str) -> String {
     let mut current_elf_score = 0;

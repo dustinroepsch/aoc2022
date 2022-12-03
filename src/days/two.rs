@@ -3,10 +3,7 @@ use std::str::FromStr;
 
 use super::Day;
 
-pub const DAY_TWO: Day = Day {
-    part_one: part_one,
-    part_two: part_two,
-};
+pub const DAY_TWO: Day = Day { part_one, part_two };
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Shape {
@@ -53,11 +50,11 @@ impl FromStr for Game {
         let mut parts = s.split_whitespace();
         let their_move = parts
             .next()
-            .ok_or(anyhow!("Invalid shape {}", s))?
+            .ok_or_else(|| anyhow!("Invalid shape {}", s))?
             .parse()?;
         let my_move = parts
             .next()
-            .ok_or(anyhow!("Invalid shape {}", s))?
+            .ok_or_else(|| anyhow!("Invalid shape {}", s))?
             .parse()?;
         if parts.next().is_some() {
             return Err(anyhow!("Invalid game: {}", s));
@@ -126,8 +123,14 @@ impl FromStr for Plan {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut parts = s.split_whitespace();
-        let their_move = parts.next().ok_or(anyhow!("Invalid plan {}", s))?.parse()?;
-        let desired_outcome = parts.next().ok_or(anyhow!("Invalid plan {}", s))?.parse()?;
+        let their_move = parts
+            .next()
+            .ok_or_else(|| anyhow!("Invalid plan {}", s))?
+            .parse()?;
+        let desired_outcome = parts
+            .next()
+            .ok_or_else(|| anyhow!("Invalid plan {}", s))?
+            .parse()?;
         if parts.next().is_some() {
             return Err(anyhow!("Invalid plan: {}", s));
         }

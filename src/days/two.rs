@@ -51,8 +51,14 @@ impl FromStr for Game {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut parts = s.split_whitespace();
-        let their_move = parts.next().unwrap().parse()?;
-        let my_move = parts.next().unwrap().parse()?;
+        let their_move = parts
+            .next()
+            .ok_or(anyhow!("Invalid shape {}", s))?
+            .parse()?;
+        let my_move = parts
+            .next()
+            .ok_or(anyhow!("Invalid shape {}", s))?
+            .parse()?;
         if parts.next().is_some() {
             return Err(anyhow!("Invalid game: {}", s));
         }
@@ -110,6 +116,50 @@ impl FromStr for DesiredOutcome {
     }
 }
 
+struct Plan {
+    their_move: Shape,
+    desired_outcome: DesiredOutcome,
+}
+
+impl FromStr for Plan {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut parts = s.split_whitespace();
+        let their_move = parts.next().ok_or(anyhow!("Invalid plan {}", s))?.parse()?;
+        let desired_outcome = parts.next().ok_or(anyhow!("Invalid plan {}", s))?.parse()?;
+        if parts.next().is_some() {
+            return Err(anyhow!("Invalid plan: {}", s));
+        }
+        Ok(Plan {
+            their_move,
+            desired_outcome,
+        })
+    }
+}
+
+impl From<Plan> for Game {
+    fn from(plan: Plan) -> Self {
+        let my_move = match plan.desired_outcome {
+            DesiredOutcome::Win => match plan.their_move {
+                Shape::Rock => Shape::Paper,
+                Shape::Paper => Shape::Scissors,
+                Shape::Scissors => Shape::Rock,
+            },
+            DesiredOutcome::Tie => plan.their_move,
+            DesiredOutcome::Lose => match plan.their_move {
+                Shape::Rock => Shape::Scissors,
+                Shape::Paper => Shape::Rock,
+                Shape::Scissors => Shape::Paper,
+            },
+        };
+        Game {
+            their_move: plan.their_move,
+            my_move,
+        }
+    }
+}
+
 pub fn part_one(input: &str) -> String {
     input
         .lines()
@@ -121,5 +171,12 @@ pub fn part_one(input: &str) -> String {
 }
 
 pub fn part_two(input: &str) -> String {
-    todo!();
+    input
+        .lines()
+        .map(Plan::from_str)
+        .map(Result::unwrap)
+        .map(Game::from)
+        .map(|game| game.score())
+        .sum::<i32>()
+        .to_string()
 }

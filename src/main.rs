@@ -1,5 +1,5 @@
 use anyhow::{bail, Context, Result};
-use aoc_2022::days::one::DAY_ONE;
+use aoc_2022::days::DAYS;
 
 use clap::Parser;
 
@@ -31,7 +31,6 @@ pub fn load_example_input(day: u8, part: u8) -> Result<String> {
 }
 
 fn main() -> Result<()> {
-    let days = [DAY_ONE];
     let args = Args::parse();
 
     if args.part > 2 {
@@ -40,7 +39,7 @@ fn main() -> Result<()> {
 
     let day_idx = args.day - 1;
 
-    if day_idx as usize >= days.len() {
+    if day_idx as usize >= DAYS.len() {
         bail!("Day {} is not implemented", args.day);
     }
 
@@ -51,7 +50,7 @@ fn main() -> Result<()> {
         None => load_example_input(args.day, args.part)?,
     };
 
-    let day = &days[day_idx as usize];
+    let day = &DAYS[day_idx as usize];
 
     if args.part == 1 {
         println!("{}", (day.part_one)(&input));

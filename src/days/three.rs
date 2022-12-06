@@ -9,7 +9,7 @@ use super::Day;
 
 pub const DAY_THREE: Day = Day { part_one, part_two };
 
-type Compartment = HashMap<char, usize>;
+type Compartment = HashSet<char>;
 
 struct RuckSack {
     a: Compartment,
@@ -44,25 +44,16 @@ impl FromStr for RuckSack {
 
         let (a, b) = s.split_at(s.len() / 2);
 
-        let a = a.chars().fold(Compartment::new(), |mut acc, c| {
-            *acc.entry(c).or_insert(0) += 1;
-            acc
-        });
-
-        let b = b.chars().fold(Compartment::new(), |mut acc, c| {
-            *acc.entry(c).or_insert(0) += 1;
-            acc
-        });
-
-        Ok(RuckSack { a, b })
+        Ok(RuckSack {
+            a: a.chars().collect(),
+            b: b.chars().collect(),
+        })
     }
 }
 
 impl RuckSack {
-    fn overlap(&self) -> char {
-        let a = self.a.keys().cloned().collect::<HashSet<char>>();
-        let b = self.b.keys().cloned().collect::<HashSet<char>>();
-        *a.intersection(&b).next().unwrap()
+    fn overlap(&self) -> HashSet<char> {
+        self.a.intersection(&self.b).cloned().collect()
     }
 }
 
@@ -71,7 +62,7 @@ pub fn part_one(input: &str) -> String {
         .lines()
         .map(RuckSack::from_str)
         .map(Result::unwrap)
-        .map(|r| r.overlap())
+        .flat_map(|r| r.overlap())
         .map(|c| c.priority())
         .sum::<i32>()
         .to_string()

@@ -84,6 +84,16 @@ impl AssignmentPair {
     fn one_contains_other(&self) -> bool {
         self.left.contains(&self.right) || self.right.contains(&self.left)
     }
+
+    fn overlaps(&self) -> bool {
+        let (first, second) = if self.left.min < self.right.min {
+            (&self.left, &self.right)
+        } else {
+            (&self.right, &self.left)
+        };
+
+        first.max >= second.min
+    }
 }
 
 pub fn part_one(input: &str) -> String {
@@ -97,5 +107,11 @@ pub fn part_one(input: &str) -> String {
 }
 
 pub fn part_two(input: &str) -> String {
-    todo!()
+    input
+        .lines()
+        .map(|line| line.parse::<AssignmentPair>())
+        .map(|result| result.unwrap())
+        .filter(|pair| pair.overlaps())
+        .count()
+        .to_string()
 }

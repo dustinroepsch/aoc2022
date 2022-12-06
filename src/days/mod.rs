@@ -1,3 +1,4 @@
+pub mod four;
 pub mod one;
 pub mod three;
 pub mod two;
@@ -9,4 +10,4 @@ pub struct Day {
     pub part_two: Solution,
 }
 
-pub const DAYS: [Day; 3] = [one::DAY_ONE, two::DAY_TWO, three::DAY_THREE];
+pub const DAYS: [Day; 4] = [one::DAY_ONE, two::DAY_TWO, three::DAY_THREE, four::DAY_FOUR];

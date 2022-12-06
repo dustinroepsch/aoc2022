@@ -7,10 +7,7 @@ use anyhow::bail;
 
 use super::Day;
 
-pub const DAY_THREE: Day = Day {
-    part_one: part_one,
-    part_two: part_two,
-};
+pub const DAY_THREE: Day = Day { part_one, part_two };
 
 type Compartment = HashMap<char, usize>;
 
@@ -65,7 +62,7 @@ impl RuckSack {
     fn overlap(&self) -> char {
         let a = self.a.keys().cloned().collect::<HashSet<char>>();
         let b = self.b.keys().cloned().collect::<HashSet<char>>();
-        a.intersection(&b).next().unwrap().clone()
+        *a.intersection(&b).next().unwrap()
     }
 }
 
@@ -80,6 +77,6 @@ pub fn part_one(input: &str) -> String {
         .to_string()
 }
 
-pub fn part_two(input: &str) -> String {
+pub fn part_two(_input: &str) -> String {
     todo!()
 }

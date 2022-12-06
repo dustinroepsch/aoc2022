@@ -62,7 +62,7 @@ impl FromStr for RuckSack {
 }
 
 impl RuckSack {
-    fn overlap(&self) -> char{
+    fn overlap(&self) -> char {
         let a = self.a.keys().cloned().collect::<HashSet<char>>();
         let b = self.b.keys().cloned().collect::<HashSet<char>>();
         a.intersection(&b).next().unwrap().clone()

@@ -1,7 +1,5 @@
-use std::{
-    collections::{HashSet},
-    str::FromStr,
-};
+use itertools::Itertools;
+use std::{collections::HashSet, str::FromStr};
 
 use anyhow::bail;
 
@@ -68,6 +66,15 @@ pub fn part_one(input: &str) -> String {
         .to_string()
 }
 
-pub fn part_two(_input: &str) -> String {
-    todo!()
+pub fn part_two(input: &str) -> String {
+    input
+        .lines()
+        .map(|line| line.chars().collect::<HashSet<char>>())
+        .chunks(3)
+        .into_iter()
+        .flat_map(|chunk| chunk.reduce(|a, b| a.intersection(&b).cloned().collect()))
+        .flatten()
+        .map(|c| c.priority())
+        .sum::<i32>()
+        .to_string()
 }

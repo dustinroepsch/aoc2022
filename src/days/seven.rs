@@ -1,4 +1,4 @@
-use anyhow::anyhow;
+use anyhow::{anyhow, bail, Context};
 use itertools::Itertools;
 use std::{
     fmt::{Display, Pointer},
@@ -38,11 +38,18 @@ impl FromStr for Token {
         let second_word = words.next();
         let third_word = words.next();
 
+        if words.next().is_some() {
+            bail!("({}) has too many parts to be a Token", s);
+        }
+
         match (first_word, second_word, third_word) {
+            (Some("$"), Some("cd"), Some(dir)) => Ok(Token::CD(dir.to_string())),
             (Some("$"), Some("ls"), None) => Ok(Token::LS),
-            (Some("$"), Some("dir"), Some(dir)) => Ok(Token::Dir(dir.to_string())),
+            (Some("dir"), Some(dir), None) => Ok(Token::Dir(dir.to_string())),
             (Some(size), Some(name), None) => Ok(Token::File {
-                size: size.parse()?,
+                size: size
+                    .parse()
+                    .with_context(|| format!("{} is not a valid size", size))?,
 
                 name: name.to_string(),
             }),

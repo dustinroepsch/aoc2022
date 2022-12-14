@@ -1,12 +1,6 @@
-use anyhow::{anyhow, bail, Context};
+use std::{cell::RefCell, collections::HashMap, fmt::Display, rc::Rc, str::FromStr};
 
-use std::{
-    cell::RefCell,
-    collections::{HashMap},
-    fmt::Display,
-    rc::Rc,
-    str::FromStr,
-};
+use anyhow::{anyhow, bail, Context};
 
 use super::Day;
 

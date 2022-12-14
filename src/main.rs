@@ -1,6 +1,5 @@
 use anyhow::{bail, Context, Result};
 use aoc_2022::days::DAYS;
-
 use clap::Parser;
 
 /// A CLI tool that solves Advent of Code 2022 puzzles

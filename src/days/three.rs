@@ -1,7 +1,7 @@
-use itertools::Itertools;
 use std::{collections::HashSet, str::FromStr};
 
 use anyhow::bail;
+use itertools::Itertools;
 
 use super::Day;
 

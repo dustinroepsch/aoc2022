@@ -1,5 +1,6 @@
-use anyhow::anyhow;
 use std::str::FromStr;
+
+use anyhow::anyhow;
 
 use super::Day;
 

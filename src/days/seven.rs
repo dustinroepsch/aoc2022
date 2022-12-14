@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Context};
 use itertools::Itertools;
 use std::{
-    fmt::{Display, Pointer},
+    fmt::{Display},
     str::FromStr,
 };
 
@@ -65,6 +65,6 @@ fn part_one(input: &str) -> String {
         .join("\n")
 }
 
-fn part_two(input: &str) -> String {
+fn part_two(_input: &str) -> String {
     todo!()
 }

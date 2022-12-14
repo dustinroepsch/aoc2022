@@ -68,6 +68,8 @@ struct Directory {
     files: Vec<File>,
 }
 
+type RefDirectory = Rc<RefCell<Directory>>;
+
 impl Directory {
     pub fn total_size(&self) -> usize {
         let my_file_size = self.files.iter().map(|f| f.size).sum::<usize>();
@@ -82,13 +84,13 @@ impl Directory {
 
 #[derive(Debug)]
 struct FileSystem {
-    root: Rc<RefCell<Directory>>,
-    current: Rc<RefCell<Directory>>,
+    root: RefDirectory,
+    current: RefDirectory,
 }
 
 impl FileSystem {
     pub fn new() -> Self {
-        let root = Rc::new(RefCell::new(Directory::default()));
+        let root = RefDirectory::default();
         let current = root.clone();
 
         Self { root, current }
@@ -108,7 +110,7 @@ impl FileSystem {
         }
     }
 
-    pub fn add_or_get_dir(&mut self, dir: &str) -> Rc<RefCell<Directory>> {
+    pub fn add_or_get_dir(&mut self, dir: &str) -> RefDirectory {
         let mut current = self.current.borrow_mut();
         let entry = current.subdirs.entry(dir.to_string()).or_insert_with(|| {
             let new_dir: Directory = Directory {

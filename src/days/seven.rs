@@ -1,9 +1,6 @@
 use anyhow::{anyhow, bail, Context};
 use itertools::Itertools;
-use std::{
-    fmt::{Display},
-    str::FromStr,
-};
+use std::{fmt::Display, str::FromStr};
 
 use super::Day;
 

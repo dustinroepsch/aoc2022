@@ -183,3 +183,36 @@ pub fn part_two(input: &str) -> String {
         .sum::<i32>()
         .to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let example = include_str!("../../inputs/2/1/example.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "15");
+    }
+
+    #[test]
+    fn test_part_one_input() {
+        let example = include_str!("../../inputs/2/1/input.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "13446");
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let example = include_str!("../../inputs/2/2/example.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "12");
+    }
+
+    #[test]
+    fn test_part_two_input() {
+        let example = include_str!("../../inputs/2/2/input.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "13509");
+    }
+}

@@ -54,3 +54,22 @@ fn part_two(input: &str) -> String {
 
     top_three_elves.iter().sum::<u64>().to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let example = include_str!("../../inputs/1/1/example.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "24000");
+    }
+
+    #[test]
+    fn test_part_one_input() {
+        let example = include_str!("../../inputs/1/1/input.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "71780");
+    }
+}

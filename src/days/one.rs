@@ -72,4 +72,18 @@ mod tests {
         let answer = part_one(example);
         assert_eq!(answer, "71780");
     }
+
+    #[test]
+    fn test_part_two_example() {
+        let example = include_str!("../../inputs/1/2/example.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "45000");
+    }
+
+    #[test]
+    fn test_part_two_input() {
+        let example = include_str!("../../inputs/1/2/input.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "212489");
+    }
 }

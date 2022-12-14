@@ -1,8 +1,8 @@
 use anyhow::{anyhow, bail, Context};
-use itertools::Itertools;
+
 use std::{
     cell::RefCell,
-    collections::{HashMap, HashSet},
+    collections::{HashMap},
     fmt::Display,
     rc::Rc,
     str::FromStr,

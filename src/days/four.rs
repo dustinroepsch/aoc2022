@@ -115,3 +115,36 @@ pub fn part_two(input: &str) -> String {
         .count()
         .to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let example = include_str!("../../inputs/4/1/example.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "2");
+    }
+
+    #[test]
+    fn test_part_one_input() {
+        let example = include_str!("../../inputs/4/1/input.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "515");
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let example = include_str!("../../inputs/4/2/example.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "4");
+    }
+
+    #[test]
+    fn test_part_two_input() {
+        let example = include_str!("../../inputs/4/2/input.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "883");
+    }
+}

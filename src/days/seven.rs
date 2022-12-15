@@ -92,7 +92,7 @@ impl FileSystem {
 
     pub fn make_dir_if_needed(&mut self, dir: &str) {
         let parent_path = self.current_path();
-        let parent_dir = self.dirs.entry(parent_path).or_insert(Default::default());
+        let parent_dir = self.dirs.entry(parent_path).or_default();
         parent_dir.child_dirs.push(dir.to_string());
         if !self.dirs.contains_key(dir) {
             self.dirs.insert(dir.to_string(), Default::default());
@@ -105,7 +105,7 @@ impl FileSystem {
 
     pub fn add_file(&mut self, file: File) {
         let path = self.current_path();
-        let dir = self.dirs.entry(path).or_insert(Default::default());
+        let dir = self.dirs.entry(path).or_default();
         dir.files.push(file);
     }
 

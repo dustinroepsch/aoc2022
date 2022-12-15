@@ -129,15 +129,21 @@ impl FileSystem {
     }
 }
 
+impl FromStr for FileSystem {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut fs = FileSystem::new();
+        for line in s.lines() {
+            let token = line.parse::<Token>()?;
+            fs.process_token(token);
+        }
+        Ok(fs)
+    }
+}
+
 fn part_one(input: &str) -> String {
-    let fs =
-        input
-            .lines()
-            .map(|l| l.parse::<Token>().unwrap())
-            .fold(FileSystem::new(), |mut fs, t| {
-                fs.process_token(t);
-                fs
-            });
+    let fs = input.parse::<FileSystem>().unwrap();
 
     let mut to_visit = vec!["/".to_string()];
     let mut answer = 0;
@@ -155,6 +161,59 @@ fn part_one(input: &str) -> String {
     answer.to_string()
 }
 
-fn part_two(_input: &str) -> String {
-    todo!()
+fn part_two(input: &str) -> String {
+    let fs = input.parse::<FileSystem>().unwrap();
+
+    let mut to_visit = vec!["/".to_string()];
+    let mut candidates = Vec::new();
+
+    let used_space = fs.total_size("/");
+    let free_space = 70000000 - used_space;
+    let need_to_free = 30000000 - free_space;
+
+    while !to_visit.is_empty() {
+        let dir_path = to_visit.pop().unwrap();
+        let dir = fs.dirs.get(&dir_path).unwrap();
+        for child in dir.child_dirs.iter() {
+            to_visit.push(format!("{}/{}", dir_path, child));
+        }
+        let dir_size = fs.total_size(&dir_path);
+        if dir_size >= need_to_free {
+            candidates.push(dir_size);
+        }
+    }
+    candidates.into_iter().min().unwrap().to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let example = include_str!("../../inputs/7/1/example.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "95437");
+    }
+
+    #[test]
+    fn test_part_one_input() {
+        let example = include_str!("../../inputs/7/1/input.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "1443806");
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let example = include_str!("../../inputs/7/2/example.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "24933642");
+    }
+
+    #[test]
+    fn test_part_two_input() {
+        let example = include_str!("../../inputs/7/2/input.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "942298");
+    }
 }

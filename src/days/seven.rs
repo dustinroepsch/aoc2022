@@ -63,91 +63,96 @@ struct File {
 
 #[derive(Debug, Default)]
 struct Directory {
-    subdirs: HashMap<String, Rc<RefCell<Directory>>>,
-    parent: Option<Rc<RefCell<Directory>>>,
+    child_dirs: Vec<String>,
     files: Vec<File>,
 }
 
-type RefDirectory = Rc<RefCell<Directory>>;
-
-impl Directory {
-    pub fn total_size(&self) -> usize {
-        let my_file_size = self.files.iter().map(|f| f.size).sum::<usize>();
-        let subdirs_size = self
-            .subdirs
-            .values()
-            .map(|d| d.borrow().total_size())
-            .sum::<usize>();
-        return my_file_size + subdirs_size;
-    }
-}
-
-#[derive(Debug)]
 struct FileSystem {
-    root: RefDirectory,
-    current: RefDirectory,
+    dirs: HashMap<String, Directory>,
+    current_path: Vec<String>,
 }
 
 impl FileSystem {
     pub fn new() -> Self {
-        let root = RefDirectory::default();
-        let current = root.clone();
-
-        Self { root, current }
-    }
-
-    pub fn cd(&mut self, dir: &str) {
-        match dir {
-            ".." => {
-                let parent = self.current.borrow().parent.clone();
-                self.current = parent.unwrap().clone();
-            }
-            "/" => self.current = self.root.clone(),
-            new_current_dir => {
-                let new_current = self.add_or_get_dir(new_current_dir);
-                self.current = new_current;
-            }
+        FileSystem {
+            dirs: HashMap::new(),
+            current_path: vec!["/".to_string()],
         }
     }
 
-    pub fn add_or_get_dir(&mut self, dir: &str) -> RefDirectory {
-        let mut current = self.current.borrow_mut();
-        let entry = current.subdirs.entry(dir.to_string()).or_insert_with(|| {
-            let new_dir: Directory = Directory {
-                parent: Some(self.current.clone()),
-                ..Default::default()
-            };
-            Rc::new(RefCell::new(new_dir))
-        });
+    pub fn cd(&mut self, dir: &str) {
+        if dir == "/" {
+            self.current_path = vec!["/".to_string()];
+        } else if dir == ".." {
+            self.current_path.pop();
+        } else {
+            self.current_path.push(dir.to_string());
+        }
+    }
 
-        entry.clone()
+    pub fn make_dir_if_needed(&mut self, dir: &str) {
+        let parent_path = self.current_path();
+        let parent_dir = self.dirs.entry(parent_path).or_insert(Default::default());
+        parent_dir.child_dirs.push(dir.to_string());
+        if !self.dirs.contains_key(dir) {
+            self.dirs.insert(dir.to_string(), Default::default());
+        }
+    }
+
+    pub fn current_path(&self) -> String {
+        self.current_path.join("/")
     }
 
     pub fn add_file(&mut self, file: File) {
-        let mut current_dir = self.current.borrow_mut();
-        current_dir.files.push(file);
+        let path = self.current_path();
+        let dir = self.dirs.entry(path).or_insert(Default::default());
+        dir.files.push(file);
     }
 
     pub fn process_token(&mut self, token: Token) {
         match token {
             Token::CD(dir) => self.cd(&dir),
             Token::LS => (),
-            Token::Dir(dir) => {
-                self.add_or_get_dir(&dir);
-            }
+            Token::Dir(dir) => self.make_dir_if_needed(&dir),
             Token::File(file) => self.add_file(file),
         }
+    }
+
+    pub fn total_size(&self, dir_path: &str) -> usize {
+        let dir = self.dirs.get(dir_path).unwrap();
+        dir.files.iter().map(|f| f.size).sum::<usize>()
+            + dir
+                .child_dirs
+                .iter()
+                .map(|child| self.total_size(&format!("{}/{}", dir_path, child)))
+                .sum::<usize>()
     }
 }
 
 fn part_one(input: &str) -> String {
-    let mut fs = FileSystem::new();
-    for token in input.lines().map(|line| line.parse::<Token>().unwrap()) {
-        fs.process_token(token);
-    }
+    let fs =
+        input
+            .lines()
+            .map(|l| l.parse::<Token>().unwrap())
+            .fold(FileSystem::new(), |mut fs, t| {
+                fs.process_token(t);
+                fs
+            });
 
-    let root = fs.root.borrow();
-    root.total_size().to_string()
+    let mut to_visit = vec!["/".to_string()];
+    let mut answer = 0;
+    while !to_visit.is_empty() {
+        let dir_path = to_visit.pop().unwrap();
+        let dir = fs.dirs.get(&dir_path).unwrap();
+        for child in dir.child_dirs.iter() {
+            to_visit.push(format!("{}/{}", dir_path, child));
+        }
+        let dir_size = fs.total_size(&dir_path);
+        if dir_size <= 100000 {
+            answer += dir_size;
+        }
+    }
+    answer.to_string()
 }
 
 fn part_two(_input: &str) -> String {

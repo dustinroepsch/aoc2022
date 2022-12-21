@@ -116,7 +116,7 @@ impl CraneYard {
         for i in 0..size {
             let stack = self.crates.get(&i).unwrap();
             let char = stack.last().unwrap_or(&' ');
-            message.push(char.clone());
+            message.push(*char);
         }
         message
     }

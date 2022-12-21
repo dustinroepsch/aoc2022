@@ -1,6 +1,6 @@
 use std::{fmt::Display, str::FromStr};
 
-use itertools::Itertools;
+
 
 use super::Day;
 
@@ -47,6 +47,6 @@ fn part_one(input: &str) -> String {
     format!("{}", m)
 }
 
-fn part_two(input: &str) -> String {
+fn part_two(_input: &str) -> String {
     todo!()
 }

@@ -110,6 +110,23 @@ impl CraneYard {
         to_stack.extend(buffer.into_iter());
     }
 
+    pub fn handle_instruction_two(&mut self, instruction: &Instruction) {
+        let to = instruction.to - 1;
+        let from = instruction.from - 1;
+        let buffer = {
+            let mut buffer = Vec::new();
+            let from_stack = self.crates.get_mut(&from).unwrap();
+            for _ in 0..instruction.count {
+                buffer.push(from_stack.pop().unwrap());
+            }
+            buffer.reverse();
+            buffer
+        };
+        let to_stack = self.crates.get_mut(&to).unwrap();
+        to_stack.extend(buffer.into_iter());
+    }
+
+
     pub fn get_secret_message(&self) -> String {
         let size = self.crates.keys().max().unwrap() + 1;
         let mut message = String::new();
@@ -190,6 +207,19 @@ fn part_one(input: &str) -> String {
     yard.get_secret_message()
 }
 
-fn part_two(_input: &str) -> String {
-    todo!()
+fn part_two(input: &str) -> String {
+    let (yard, commands) = input.split_once("\n\n").unwrap();
+
+    let mut yard = yard.parse::<CraneYard>().unwrap();
+
+    let commands = commands
+        .lines()
+        .map(|l| l.parse::<Instruction>().unwrap())
+        .collect::<Vec<_>>();
+
+    for command in commands.iter() {
+        yard.handle_instruction_two(command);
+    }
+
+    yard.get_secret_message()
 }

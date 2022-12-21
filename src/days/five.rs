@@ -126,7 +126,6 @@ impl CraneYard {
         to_stack.extend(buffer.into_iter());
     }
 
-
     pub fn get_secret_message(&self) -> String {
         let size = self.crates.keys().max().unwrap() + 1;
         let mut message = String::new();

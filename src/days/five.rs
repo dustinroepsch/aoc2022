@@ -7,6 +7,11 @@ use super::Day;
 
 pub const DAY_FIVE: Day = Day { part_one, part_two };
 
+#[cfg(windows)]
+const LINE_ENDING: &'static str = "\r\n";
+#[cfg(not(windows))]
+const LINE_ENDING: &'static str = "\n";
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum DiagramToken {
     Empty,
@@ -190,7 +195,9 @@ impl FromStr for CraneYard {
 }
 
 fn part_one(input: &str) -> String {
-    let (yard, commands) = input.split_once("\n\n").unwrap();
+    let blank_line = format!("{}{}", LINE_ENDING, LINE_ENDING);
+
+    let (yard, commands) = input.split_once(&blank_line).unwrap();
 
     let mut yard = yard.parse::<CraneYard>().unwrap();
 
@@ -207,7 +214,9 @@ fn part_one(input: &str) -> String {
 }
 
 fn part_two(input: &str) -> String {
-    let (yard, commands) = input.split_once("\n\n").unwrap();
+    let blank_line = format!("{}{}", LINE_ENDING, LINE_ENDING);
+
+    let (yard, commands) = input.split_once(&blank_line).unwrap();
 
     let mut yard = yard.parse::<CraneYard>().unwrap();
 

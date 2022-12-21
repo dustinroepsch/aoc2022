@@ -18,7 +18,7 @@ impl Display for TreeHeightMap {
             }
             writeln!(f)?;
         }
-        writeln!(f)
+        Ok(())
     }
 }
 

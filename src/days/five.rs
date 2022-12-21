@@ -1,10 +1,7 @@
-use std::{
-    collections::HashMap,
-    str::{FromStr},
-};
+use std::{collections::HashMap, str::FromStr};
 
 use anyhow::{bail, Context, Ok};
-use itertools::{Itertools};
+use itertools::Itertools;
 
 use super::Day;
 
@@ -47,9 +44,9 @@ impl FromStr for DiagramToken {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Instruction {
-    from: usize,
-    to: usize,
-    count: usize,
+    pub from: usize,
+    pub to: usize,
+    pub count: usize,
 }
 
 impl FromStr for Instruction {
@@ -97,6 +94,34 @@ struct CraneYard {
     crates: HashMap<usize, Vec<char>>,
 }
 
+impl CraneYard {
+    pub fn handle_instruction(&mut self, instruction: &Instruction) {
+        let to = instruction.to - 1;
+        let from = instruction.from - 1;
+        let buffer = {
+            let mut buffer = Vec::new();
+            let from_stack = self.crates.get_mut(&from).unwrap();
+            for _ in 0..instruction.count {
+                buffer.push(from_stack.pop().unwrap());
+            }
+            buffer
+        };
+        let to_stack = self.crates.get_mut(&to).unwrap();
+        to_stack.extend(buffer.into_iter());
+    }
+
+    pub fn get_secret_message(&self) -> String {
+        let size = self.crates.keys().max().unwrap() + 1;
+        let mut message = String::new();
+        for i in 0..size {
+            let stack = self.crates.get(&i).unwrap();
+            let char = stack.last().unwrap_or(&' ');
+            message.push(char.clone());
+        }
+        message
+    }
+}
+
 impl FromStr for CraneYard {
     type Err = anyhow::Error;
 
@@ -111,8 +136,11 @@ impl FromStr for CraneYard {
             .map(|s| s.parse::<DiagramToken>())
             .collect::<Result<Vec<_>, _>>()?;
 
-        if !idx_row.iter().all(|t| matches!(t, DiagramToken::CrateIdx(_))) {
-            bail!("Invalid index row") 
+        if !idx_row
+            .iter()
+            .all(|t| matches!(t, DiagramToken::CrateIdx(_)))
+        {
+            bail!("Invalid index row")
         }
 
         let mut crates: HashMap<usize, Vec<char>> = HashMap::new();
@@ -126,7 +154,8 @@ impl FromStr for CraneYard {
                     chunk
                         .collect::<String>()
                         .parse::<DiagramToken>()
-                        .context("Invalid token").unwrap()
+                        .context("Invalid token")
+                        .unwrap()
                 })
                 .enumerate()
             {
@@ -147,14 +176,18 @@ impl FromStr for CraneYard {
 fn part_one(input: &str) -> String {
     let (yard, commands) = input.split_once("\n\n").unwrap();
 
-    let yard = yard.parse::<CraneYard>().unwrap();
+    let mut yard = yard.parse::<CraneYard>().unwrap();
 
     let commands = commands
         .lines()
         .map(|l| l.parse::<Instruction>().unwrap())
         .collect::<Vec<_>>();
 
-    format!("({:?}) - ({:?})", yard, commands)
+    for command in commands.iter() {
+        yard.handle_instruction(command);
+    }
+
+    yard.get_secret_message()
 }
 
 fn part_two(_input: &str) -> String {

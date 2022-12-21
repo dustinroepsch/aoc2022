@@ -29,3 +29,36 @@ fn part_two(input: &str) -> String {
     }
     total_taken.to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    pub use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let example = include_str!("../../inputs/6/1/example.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "7");
+    }
+
+    #[test]
+    fn test_part_one_input() {
+        let example = include_str!("../../inputs/6/1/input.txt");
+        let answer = part_one(example);
+        assert_eq!(answer, "1175");
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let example = include_str!("../../inputs/6/2/example.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "19");
+    }
+
+    #[test]
+    fn test_part_two_input() {
+        let example = include_str!("../../inputs/6/2/input.txt");
+        let answer = part_two(example);
+        assert_eq!(answer, "3217");
+    }
+}

@@ -13,7 +13,7 @@ fn part_one(input: &str) -> String {
     while !buf.iter().all_unique() {
         buf.pop_front();
         buf.push_back(chars.next().unwrap());
-        total_taken += 1; 
+        total_taken += 1;
     }
     total_taken.to_string()
 }
@@ -25,7 +25,7 @@ fn part_two(input: &str) -> String {
     while !buf.iter().all_unique() {
         buf.pop_front();
         buf.push_back(chars.next().unwrap());
-        total_taken += 1; 
+        total_taken += 1;
     }
     total_taken.to_string()
 }

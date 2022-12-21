@@ -1,11 +1,10 @@
 use std::{
     collections::HashMap,
-    hash::Hash,
-    str::{Chars, FromStr},
+    str::{FromStr},
 };
 
 use anyhow::{bail, Context, Ok};
-use itertools::{Chunk, Itertools};
+use itertools::{Itertools};
 
 use super::Day;
 
@@ -112,16 +111,13 @@ impl FromStr for CraneYard {
             .map(|s| s.parse::<DiagramToken>())
             .collect::<Result<Vec<_>, _>>()?;
 
-        if !idx_row.iter().all(|t| match t {
-            DiagramToken::CrateIdx(_) => true,
-            _ => false,
-        }) {
-            bail!("Invalid index row");
+        if !idx_row.iter().all(|t| matches!(t, DiagramToken::CrateIdx(_))) {
+            bail!("Invalid index row") 
         }
 
         let mut crates: HashMap<usize, Vec<char>> = HashMap::new();
 
-        while let Some(line) = lines.next() {
+        for line in lines {
             for (idx, token) in line
                 .chars()
                 .chunks(4)

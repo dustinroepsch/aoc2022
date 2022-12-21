@@ -1,3 +1,4 @@
+pub mod eight;
 pub mod five;
 pub mod four;
 pub mod one;
@@ -13,7 +14,7 @@ pub struct Day {
     pub part_two: Solution,
 }
 
-pub const DAYS: [Day; 7] = [
+pub const DAYS: [Day; 8] = [
     one::DAY_ONE,
     two::DAY_TWO,
     three::DAY_THREE,
@@ -21,4 +22,5 @@ pub const DAYS: [Day; 7] = [
     five::DAY_FIVE,
     six::DAY_SIX,
     seven::DAY_SEVEN,
+    eight::DAY_EIGHT,
 ];

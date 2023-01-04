@@ -1,4 +1,8 @@
-use std::{collections::{HashMap, HashSet}, fmt::Display, str::FromStr};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+    str::FromStr,
+};
 
 use anyhow::{anyhow, bail, Context};
 

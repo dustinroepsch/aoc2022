@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt::Display, str::FromStr};
+use std::{collections::{HashMap, HashSet}, fmt::Display, str::FromStr};
 
 use anyhow::{anyhow, bail, Context};
 
@@ -63,7 +63,7 @@ struct File {
 
 #[derive(Debug, Default)]
 struct Directory {
-    child_dirs: Vec<String>,
+    child_dirs: HashSet<String>,
     files: Vec<File>,
 }
 
@@ -93,7 +93,7 @@ impl FileSystem {
     pub fn make_dir_if_needed(&mut self, dir: &str) {
         let parent_path = self.current_path();
         let parent_dir = self.dirs.entry(parent_path).or_default();
-        parent_dir.child_dirs.push(dir.to_string());
+        parent_dir.child_dirs.insert(dir.to_string());
         if !self.dirs.contains_key(dir) {
             self.dirs.insert(dir.to_string(), Default::default());
         }
